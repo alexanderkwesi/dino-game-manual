@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dino Game Code Explained</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-white-900 text-white min-h-screen py-10 px-4">
+  <div style="display:inline-flex;flex-direction:row;flex-flow:wrap;align-content:center;justify-self:center;width:fit-content;gap:10px;max-width:100%;padding-left:280px;margin:30px;"><h1 class="text-4xl font-bold text-center text-blue-400 mb-10">🦖 Dino Game Code Explanation</h1><a href="index.html" style="background-color:yellow;border:3px solid black;width:490px;height:70px;padding:15px;text-align:center;color:black;font-size:large;">Want to See The Code All Together! Click Here..</a></div>
+  <div class="max-w-5xl mx-auto space-y-6">
+    <div id="code-container" class="space-y-10"></div>
+  </div>
+
+  <script>
+    const codeWithExplanation = [
+      { line: "let selectedDino = null;", explanation: "Stores the selected dino character." },
+      { line: "const dinoOptions = document.querySelectorAll(\".dino\");", explanation: "Grabs all selectable dino character elements." },
+      { line: "const characterSelect = document.getElementById(\"character-select\");", explanation: "DOM reference for the character selection UI." },
+      { line: "const gameContainer = document.getElementById(\"game-container\");", explanation: "DOM reference to the main game container." },
+      { line: "const canvas = document.getElementById(\"game\");", explanation: "Canvas element for game rendering." },
+      { line: "const ctx = canvas.getContext(\"2d\");", explanation: "2D drawing context from the canvas." },
+      { line: "const scoreElement = document.getElementById(\"score\");", explanation: "Displays current score." },
+      { line: "const startingMessage = document.getElementById(\"starting-message\");", explanation: "UI element for the starting message." },
+      { line: "const gameOver = document.getElementById(\"game-over\");", explanation: "UI element shown when the game ends." },
+      { line: "const keepscore = document.getElementById(\"keepscore\");", explanation: "Final score shown after game ends." },
+      { line: "const updateScore = document.getElementById(\"scores\");", explanation: "Live score tracker during the game." },
+      { line: "const levelUpMessage = document.getElementById(\"level-up-message\");", explanation: "Displays level up notifications." },
+      { line: "const btnStartAgain = document.getElementById(\"btn-start-again\");", explanation: "Button for restarting the game after game over." },
+      { line: "let level = 1;", explanation: "Tracks current level." },
+      { line: "let obstacleSpeed = 5, birdSpeed = 8, gravity = 0.6;", explanation: "Initial physics values for game difficulty and realism." },
+      { line: "let dinoX = 50;", explanation: "Initial horizontal position of the dino." },
+      { line: "let dinoY, velocityY, isJumping, score = 0, obstacleX;", explanation: "Variables for dino movement and scoring." },
+      { line: "let jumpLeft = false;", explanation: "Indicates direction of the jump." },
+      { line: "let gameStartTime = 0;", explanation: "Stores game start time for logic or stats." },
+      { line: "const dinoWidth = 80, dinoHeight = 80;", explanation: "Dino size for rendering and collision." },
+      { line: "let obstacleWidth = 40, obstacleHeight = 70;", explanation: "Obstacle size configuration." },
+      { line: "const level_1 = 1000; const level_2 = 2000;", explanation: "Score thresholds to trigger level changes." },
+      { line: "let dinoImage = new Image();", explanation: "Image object for the selected dino." },
+      { line: "let treeImage = new Image(); treeImage.src = './obstacle-tree.png';", explanation: "Tree image used as the default obstacle." },
+      { line: "const backgroundImage = new Image(); backgroundImage.src = './background-image.png';", explanation: "Main background image for level 1." },
+      { line: "const level2ObstacleImage = new Image(); level2ObstacleImage.src = './pillars.png';", explanation: "Obstacle image for level 2." },
+      { line: "const level2Background = new Image(); level2Background.src = './level-2-background.png';", explanation: "Background image for level 2." },
+      { line: "let currentBackground = backgroundImage;", explanation: "Tracks the background image in use." },
+      { line: "let currentObstacle = treeImage;", explanation: "Tracks which obstacle is currently active." },
+      { line: "canvas.width = window.innerWidth * 0.9; canvas.height = window.innerHeight * 0.7;", explanation: "Sets canvas size based on browser window." },
+      { line: "let backgroundX = 0; let gameInterval = null; let scoreIncrementInterval = null; let gameIsOver = false;", explanation: "Game state tracking and intervals." },
+      { line: "function updateGame() {", explanation: "Main game loop: called repeatedly to update game state and render graphics." },
+      { line: "  if (gameIsOver) return;", explanation: "Skip game updates if the game is over." },
+      { line: "  ctx.clearRect(0, 0, canvas.width, canvas.height);", explanation: "Clear the canvas before drawing the next frame." },
+      { line: "  ctx.drawImage(currentBackground, 0, 0, canvas.width, canvas.height);", explanation: "Draw the current background image." },
+      { line: "  velocityY += gravity;", explanation: "Apply gravity to vertical velocity." },
+      { line: "  dinoY += velocityY;", explanation: "Update dinosaur's Y position." },
+      { line: "  const floor = canvas.height - dinoHeight;", explanation: "Calculate floor position." },
+      { line: "  if (dinoY >= floor) { dinoY = floor; velocityY = 0; isJumping = false; jumpLeft = false; }", explanation: "Stop falling when dino hits the floor." },
+      { line: "  if (!isJumping && dinoX < 50) { dinoX += 2; if (dinoX > 50) dinoX = 50; }", explanation: "Slide dino back to position if it jumped left." },
+      { line: "  ctx.drawImage(dinoImage, dinoX, dinoY, dinoWidth, dinoHeight);", explanation: "Render the dino on screen." },
+      { line: "  const obstacleY = canvas.height - obstacleHeight;", explanation: "Set vertical position for obstacle." },
+      { line: "  ctx.drawImage(currentObstacle, obstacleX, obstacleY, obstacleWidth, obstacleHeight);", explanation: "Render the obstacle." },
+      { line: "  obstacleX -= obstacleSpeed;", explanation: "Move the obstacle left." },
+      { line: "  if (obstacleX + obstacleWidth < 0) obstacleX = canvas.width + Math.random() * 300;", explanation: "Reset obstacle position when it moves off-screen." },
+      { line: "  const margin = 15;", explanation: "Used to tweak collision detection bounds." },
+      { line: "  if (dinoX + dinoWidth - margin > obstacleX && dinoX + margin < obstacleX + obstacleWidth && dinoY + dinoHeight - margin > obstacleY && dinoY + margin < obstacleY + obstacleHeight) { endGame(); }", explanation: "Collision detection: if dino overlaps with obstacle, end the game." },
+      { line: "  if (score >= level_1 && level === 1) { level = 2; enterLevelTwo(); }", explanation: "Transition to level 2 when score passes threshold." },
+      { line: "}", explanation: "End of updateGame function." },
+
+      { line: "function handleJump(e) {", explanation: "Handles keypress events to make the dino jump." },
+      { line: "  if (gameIsOver) return;", explanation: "Prevent jumping if game is over." },
+      { line: "  if ((e.code === 'Space' || e.code === 'ArrowUp') && !isJumping) { velocityY = -12; isJumping = true; jumpLeft = false; }", explanation: "Jump upwards if not already jumping." },
+      { line: "  if ((e.code === 'ArrowRight' || e.code === 'KeyA') && !isJumping) { velocityY = -12; dinoX += 30; if (dinoX < 0) dinoX = 0; isJumping = true; jumpLeft = true; }", explanation: "Jump forward and to the right if 'ArrowRight' or 'A' is pressed." },
+      { line: "}", explanation: "End of handleJump function." },
+
+      { line: "function showLevelUp(message) {", explanation: "Displays a level-up message to the player." },
+      { line: "  levelUpMessage.textContent = message;", explanation: "Set the level-up message text." },
+      { line: "  levelUpMessage.classList.remove('hide');", explanation: "Make the level-up message visible." },
+      { line: "}", explanation: "End of showLevelUp function." },
+
+      { line: "function enterLevelTwo() {", explanation: "Switches the game to level 2 assets and settings." },
+      { line: "  currentBackground = level2Background;", explanation: "Set new background for level 2." },
+      { line: "  currentObstacle = level2ObstacleImage;", explanation: "Set new obstacle for level 2." },
+      { line: "  obstacleSpeed = 8;", explanation: "Increase obstacle speed for difficulty." },
+      { line: "  showLevelUp('LEVEL 2!');", explanation: "Show level-up notification." },
+      { line: "}", explanation: "End of enterLevelTwo function." },
+
+      { line: "function endGame() {", explanation: "Ends the current game session and shows final score." },
+      { line: "  clearInterval(gameInterval);", explanation: "Stop the game loop." },
+      { line: "  clearInterval(scoreIncrementInterval);", explanation: "Stop the score increment timer." },
+      { line: "  gameIsOver = true;", explanation: "Set game over flag." },
+      { line: "  gameOver.classList.remove('game-hide');", explanation: "Show the game over screen." },
+      { line: "  keepscore.textContent = 'Your score: ' + score;", explanation: "Display final score." },
+      { line: "  btnStartAgain.classList.remove('btn-hide');", explanation: "Show the restart button." },
+      { line: "  btnStartAgain.classList.add('btn-show');", explanation: "Style the restart button as visible." },
+      { line: "  btnStartAgain.onclick = () => { gameContainer.classList.remove('hidden'); gameOver.classList.add('game-hide'); initGame(); };", explanation: "Restart game when button is clicked." },
+      { line: "}", explanation: "End of endGame function." }
+    ];
+
+    const container = document.getElementById("code-container");
+
+    codeWithExplanation.forEach(({ line, explanation }, i) => {
+      const codeBlock = document.createElement("div");
+      codeBlock.className = "bg-gray-800 rounded-xl p-4 shadow-md";
+
+      const code = document.createElement("pre");
+      code.className = "text-green-300 text-sm font-mono";
+      code.textContent = line;
+
+      const explain = document.createElement("p");
+      explain.className = "text-gray-300 text-base mt-2 border-l-4 border-blue-400 pl-4";
+      explain.textContent = explanation;
+
+      codeBlock.appendChild(code);
+      codeBlock.appendChild(explain);
+      container.appendChild(codeBlock);
+    });
+  </script>
+</body>
+</html>
